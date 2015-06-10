@@ -6,6 +6,7 @@ TagManager:
   - pointB
   - point
   - floor
+  - Agent
   - 
   - Corner
   - Straight
