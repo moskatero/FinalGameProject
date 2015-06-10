@@ -8,9 +8,10 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 472612}
+  - 114: {fileID: 11413346}
   m_Layer: 0
   m_Name: MazeStraightSide
-  m_TagString: Untagged
+  m_TagString: Straight
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -314,6 +315,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 472648}
+  - 114: {fileID: 11472388}
   m_Layer: 0
   m_Name: Connector
   m_TagString: Untagged
@@ -329,6 +331,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 472650}
+  - 114: {fileID: 11472390}
   m_Layer: 0
   m_Name: Connector
   m_TagString: Untagged
@@ -343,7 +346,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 172612}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -200, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 472646}
@@ -1063,6 +1066,51 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &11413346
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 172612}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb53fada200b29e41bacc16d0d7a6077, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Tags:
+  - Straight
+--- !u!114 &11472388
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 172648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccd9fcef52fd0184f98548b9928db828, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Tags:
+  - Straight
+  - Curve
+  - Intersection
+  IsDefault: 0
+--- !u!114 &11472390
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 172650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccd9fcef52fd0184f98548b9928db828, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Tags:
+  - Straight
+  - Curve
+  - Intersection
+  IsDefault: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

@@ -1,15 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MazePart : MonoBehaviour {
+public class MazePart : MonoBehaviour 
+{
 
-	// Use this for initialization
-	void Start () {
+	public string[] Tags;
 	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+	public MazePartConnector[] GetExits()
+	{
+		return GetComponentsInChildren<MazePartConnector>();
 	}
 }
