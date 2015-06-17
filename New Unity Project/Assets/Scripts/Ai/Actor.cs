@@ -10,7 +10,7 @@ public class Actor : MonoBehaviour
 	{
 		kIdle,
 		kMoving,
-		kAttack,
+		kDead,
 	}
 	State state = State.kIdle;
 
@@ -21,8 +21,6 @@ public class Actor : MonoBehaviour
 	//GameObject[] agent;
 	bool isEnd = false;
 	bool isAttack = false;
-
-	int k = 0;
 	bool onNode = true;
 	
 	float speed;
@@ -48,11 +46,9 @@ public class Actor : MonoBehaviour
 	
 	void Awake()
 	{
-		//instance = this;
-		start = transform.position;
-		startpos = start;
 		senser = GameObject.FindGameObjectsWithTag("pointB");
 		ran = Random.Range (0, senser.Length);
+
 	}
 
 	void Start()
@@ -60,6 +56,8 @@ public class Actor : MonoBehaviour
 		Debug.Log("ran " +ran);
 		end = senser[ran].transform.position;
 		endpos = end;
+		start = gameObject.transform.position;
+		startpos = start;
 		targetorg = senser [ran].gameObject; 
 		target = targetorg;
 		MoveOrder (endpos);
@@ -104,6 +102,18 @@ public class Actor : MonoBehaviour
 					}
 				}
 				break;
+			case State.kDead:
+			{
+				animation.CrossFade ("Die");
+				OldTime = elapsedTime + 0.05f;
+				
+				if (elapsedTime > checkTime)
+				{
+					DestroyObject(gameObject);
+				}
+
+			}
+			break;
 			}
 		}
 	}
@@ -123,8 +133,8 @@ public class Actor : MonoBehaviour
 		if(other.CompareTag("Player"))
 		{
 			animation.CrossFade ("Run");
-			Debug.Log("HI, FUCK YOU NICKY");
 			target = other.gameObject;
+			targetpos = target.transform.position;
 			startpos = new Vector3(other.transform.position.x, transform.position.y, other.transform.position.z);
 			endpos = startpos;
 			MoveOrder(startpos);
@@ -137,6 +147,7 @@ public class Actor : MonoBehaviour
 		{
 			animation.CrossFade ("Run");
 			target = other.gameObject;
+			targetpos = target.transform.position;
 			startpos = new Vector3(other.transform.position.x, transform.position.y, other.transform.position.z);
 			endpos = startpos;
 		}
@@ -149,9 +160,10 @@ public class Actor : MonoBehaviour
 			animation.CrossFade ("Walk");
 			ChangeState(State.kMoving);
 			target = targetorg;
+			targetpos = target.transform.position;
 			startpos = start;
 			endpos = end;
-			MoveOrder(endpos);
+			MoveOrder(startpos);
 		}
 	}
 
@@ -171,17 +183,16 @@ public class Actor : MonoBehaviour
 		if (Xdistance < 0) Xdistance -= Xdistance*2;
 		float Ydistance = newPos.z - currNode.z;
 		if (Ydistance < 0) Ydistance -= Ydistance*2;
+	
 
-		Vector3 attack = new Vector3 (2,2,2);
-
-		if ((Xdistance < 0.1 && Ydistance < 0.1) && (targetpos + attack)== currNode) //Reached target
+		if ((Xdistance < 0.1 && Ydistance < 0.1) && targetpos == currNode) //Reached target
 		{
-			isAttack = true;
 
-			if(isEnd && k != 2)
+			if(isEnd)
 			{
 				MoveOrder(startpos);
 				isEnd = false;
+				Debug.Log("screw AI");
 			}
 			else 
 			{
@@ -193,7 +204,6 @@ public class Actor : MonoBehaviour
 
 		else if (Xdistance < 0.1 && Ydistance < 0.1)
 		{
-			//isAttack = false;
 			nodeIndex++;
 			onNode = true;
 		}
