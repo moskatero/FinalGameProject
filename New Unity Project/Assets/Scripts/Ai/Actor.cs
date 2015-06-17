@@ -16,8 +16,11 @@ public class Actor : MonoBehaviour
 
 	public bool DebugMode;
 	GameObject[] senser;
+	GameObject target;
+	GameObject targetorg;
 	//GameObject[] agent;
 	bool isEnd = false;
+	bool isAttack = false;
 
 	int k = 0;
 	bool onNode = true;
@@ -29,8 +32,10 @@ public class Actor : MonoBehaviour
 	int nodeIndex;
 
 	Vector3 start;
-	Vector3 target = new Vector3(0, 0, 0);
+	Vector3 startpos;
+	Vector3 targetpos = new Vector3(0, 0, 0);
 	Vector3 currNode;
+	Vector3 end;
 	Vector3 endpos;
 
 	//NodeControl control;
@@ -45,28 +50,18 @@ public class Actor : MonoBehaviour
 	{
 		//instance = this;
 		start = transform.position;
+		startpos = start;
 		senser = GameObject.FindGameObjectsWithTag("pointB");
 		ran = Random.Range (0, senser.Length);
-
-		//Debug.Log("length " + senser.Length);
-		//control = (NodeControl)senser.GetComponent(typeof(NodeControl));
-		//agent = GameObject.FindGameObjectsWithTag("Agent");
-
-		//GameObject cam = GameObject.FindGameObjectWithTag("MainCamera");
-		//GameObject cam = GameObject.FindGameObjectWithTag("pointB");
-		//control = (NodeControl)cam.GetComponent(typeof(NodeControl));
 	}
 
 	void Start()
 	{
-		//Random.seed = 42;
-		//Random.seed = 42;
 		Debug.Log("ran " +ran);
-		//ran = Random.Range (0, senser.Length);
-		//Debug.Log("length " + senser.Length);
-		endpos = senser[ran].transform.position;
-		//Debug.Log("position " + endpos);
-		////ChangeState (State.kMoving);
+		end = senser[ran].transform.position;
+		endpos = end;
+		targetorg = senser [ran].gameObject; 
+		target = targetorg;
 		MoveOrder (endpos);
 	}
 	
@@ -79,39 +74,49 @@ public class Actor : MonoBehaviour
 		{
 			switch (state)
 			{
-			case State.kIdle:
-			{
-				animation.CrossFade ("Idle");
-			}
-			break;
-				
-			case State.kMoving:
-			{	
-				OldTime = elapsedTime + 0.01f;
-				
-				if (elapsedTime > checkTime)
+				case State.kIdle:
 				{
-					checkTime = elapsedTime + 1;
-					SetTarget();
+					animation.CrossFade ("Idle");
 				}
-				
-				if (path != null)
-				{
-					if (onNode)
+				break;
+					
+				case State.kMoving:
+				{	
+					OldTime = elapsedTime + 0.01f;
+					
+					if (elapsedTime > checkTime)
 					{
-						onNode = false;
-						if (nodeIndex < path.Count)
+						checkTime = elapsedTime + 1;
+						SetTarget();
+					}
+					
+					if (path != null)
+					{
+						if (onNode)
 						{
-							currNode = path[nodeIndex];
-						}
-					} else
-						MoveToward();
+							onNode = false;
+							if (nodeIndex < path.Count)
+							{
+								currNode = path[nodeIndex];
+							}
+						} else
+							MoveToward();
+					}
 				}
-			}
-			break;
+				break;
 			}
 		}
 	}
+
+	//void OnCollisionEnter(Collision collision)
+	//{
+	//	if(collision.collider.CompareTag("Player"))
+	//	{
+	//		animation.CrossFade ("Attack");
+	//		startpos = new Vector3(collision.transform.position.x, transform.position.y, collision.transform.position.z);
+	//		endpos = startpos;
+	//	}
+	//}
 
 	void OnTriggerEnter(Collider other)
 	{
@@ -119,8 +124,21 @@ public class Actor : MonoBehaviour
 		{
 			animation.CrossFade ("Run");
 			Debug.Log("HI, FUCK YOU NICKY");
-			Vector3 pos1 = new Vector3(other.transform.position.x, transform.position.y, other.transform.position.z);
-			MoveOrder(pos1);
+			target = other.gameObject;
+			startpos = new Vector3(other.transform.position.x, transform.position.y, other.transform.position.z);
+			endpos = startpos;
+			MoveOrder(startpos);
+		}
+	}
+
+	void OnTriggerStay(Collider other)
+	{
+		if(other.CompareTag("Player"))
+		{
+			animation.CrossFade ("Run");
+			target = other.gameObject;
+			startpos = new Vector3(other.transform.position.x, transform.position.y, other.transform.position.z);
+			endpos = startpos;
 		}
 	}
 
@@ -130,6 +148,9 @@ public class Actor : MonoBehaviour
 		{
 			animation.CrossFade ("Walk");
 			ChangeState(State.kMoving);
+			target = targetorg;
+			startpos = start;
+			endpos = end;
 			MoveOrder(endpos);
 		}
 	}
@@ -151,21 +172,20 @@ public class Actor : MonoBehaviour
 		float Ydistance = newPos.z - currNode.z;
 		if (Ydistance < 0) Ydistance -= Ydistance*2;
 
-		//infanite
-		if ((Xdistance < 0.1 && Ydistance < 0.1) && target == currNode) //Reached target
+		Vector3 attack = new Vector3 (2,2,2);
+
+		if ((Xdistance < 0.1 && Ydistance < 0.1) && (targetpos + attack)== currNode) //Reached target
 		{
+			isAttack = true;
+
 			if(isEnd && k != 2)
 			{
-				MoveOrder(start);
+				MoveOrder(startpos);
 				isEnd = false;
-				//++k;
 			}
-			//if (isEnd == false && k != 2)
 			else 
 			{
 				Debug.Log("gonna move");
-				//Vector3 endpos = Senser.instance.GetEnd();
-
 				MoveOrder(endpos);
 				isEnd = true;
 			}
@@ -173,6 +193,7 @@ public class Actor : MonoBehaviour
 
 		else if (Xdistance < 0.1 && Ydistance < 0.1)
 		{
+			//isAttack = false;
 			nodeIndex++;
 			onNode = true;
 		}
@@ -183,12 +204,15 @@ public class Actor : MonoBehaviour
 		newPos += motion * speed;
 		
 		transform.position = newPos;
-		//Debug.Log("hi");
+
+		Vector3 relativePos = target.transform.position - transform.position;
+		Quaternion rotation = Quaternion.LookRotation(relativePos);
+		transform.rotation = rotation;
 	}
 	
 	void SetTarget()
 	{
-		path = NodeControl.instance.Path(transform.position, target);
+		path = NodeControl.instance.Path(transform.position, targetpos);
  		//path = control.Path(transform.position, target);
 		nodeIndex = 0;
 		onNode = true;
@@ -196,7 +220,7 @@ public class Actor : MonoBehaviour
 	
 	public void MoveOrder(Vector3 pos)
 	{
-		target = pos;
+		targetpos = pos;
 		SetTarget();
 		ChangeState(State.kMoving);
 	}

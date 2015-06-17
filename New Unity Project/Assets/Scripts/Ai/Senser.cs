@@ -38,48 +38,6 @@ public class Senser : MonoBehaviour
 		}
 	}
 
-
-	//void OnTriggerEnter(Collider other)
-	//{
-	//	if(other.CompareTag("Agent"))
-	//	{
-	//		//targets.Add(other.gameObject);
-	//		Debug.Log ("HELP");
-	//		//Vector3 target = new Vector3(transform.position.x, transform.position.y,transform.position.z);
-	//		//Actor.instance.MoveOrder(target);
-	//	}
-	//}
-
-	//void OnTriggerStay(Collider other)
-	//{
-	//	if(isNTrigger)
-	//	{
-	//		if(other.CompareTag("Agent"))
-	//		{
-	//			//targets.Add(other.gameObject);
-	//			targets = GameObject.FindGameObjectsWithTag("Agent");
-	//			foreach(GameObject target in targets)
-	//			{
-	//				Debug.Log ("HELP" + target);
-	//				pos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-	//				Actor.instance.MoveOrder(pos);
-	//			}
-	//
-	//			//poss[k] = new Vector3(transform.position.x, transform.position.y,transform.position.z);
-	//			//Debug.Log ("HELP");
-	//			//Vector3 target = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-	//			//pos = target;
-	//			//Actor.instance.MoveOrder(target);
-	//			++k;
-	//			if(k == 1)
-	//			{
-	//				isNTrigger = false;
-	//
-	//			}
-	//		}
-	//	}
-	//} 
-
 	public void Setfalse()
 	{
 		isNTrigger = true;
